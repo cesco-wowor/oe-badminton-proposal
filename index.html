@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Building — Badminton</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A56DB;
+    --blue-light: #EBF2FF;
+    --blue-mid: #B8D0F9;
+    --green: #0E7D52;
+    --green-light: #E6F5EE;
+    --text: #1A1A2E;
+    --text-muted: #5A5A72;
+    --text-hint: #9494A8;
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: rgba(26,26,46,0.10);
+    --border-strong: rgba(26,26,46,0.18);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 3rem 1rem 2.5rem;
+    position: relative;
+  }
+
+  .court-lines {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .court-lines svg { width: 100%; height: 100%; }
+
+  .shuttle-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px; height: 72px;
+    background: var(--blue);
+    border-radius: 50%;
+    margin-bottom: 1.25rem;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-8deg); }
+    50% { transform: translateY(-8px) rotate(8deg); }
+  }
+
+  .shuttle-wrap svg { width: 36px; height: 36px; }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.2rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-sub {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: var(--blue-light);
+    color: var(--blue);
+    border: 1px solid var(--blue-mid);
+  }
+
+  /* SECTION */
+  .section { margin-bottom: 1.5rem; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    margin-bottom: 0.75rem;
+    padding: 0 2px;
+  }
+
+  /* STAT CARDS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+
+  @media (max-width: 480px) {
+    .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    text-align: center;
+    transition: transform 0.15s;
+  }
+
+  .stat-card:hover { transform: translateY(-2px); }
+
+  .stat-emoji { font-size: 20px; margin-bottom: 6px; }
+
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 11px; color: var(--text-hint); }
+
+  /* VENUE */
+  .venue-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .venue-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .venue-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: transparent;
+    transition: background 0.2s;
+  }
+
+  .venue-card.selected {
+    border-color: var(--blue);
+    border-width: 1.5px;
+  }
+
+  .venue-card.selected::before { background: var(--blue); }
+
+  .venue-card:hover:not(.selected) { transform: translateY(-2px); border-color: var(--border-strong); }
+
+  .venue-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .venue-detail { font-size: 12px; color: var(--text-muted); }
+  .venue-price {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin: 10px 0 6px;
+  }
+
+  .venue-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 99px;
+    background: var(--green-light);
+    color: var(--green);
+    border: 1px solid #A7DFC7;
+  }
+
+  .venue-pill.blue {
+    background: var(--blue-light);
+    color: var(--blue);
+    border-color: var(--blue-mid);
+  }
+
+  /* BREAKDOWN */
+  .breakdown {
+    background: #F0F4FF;
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+    margin-top: 10px;
+    border: 0.5px solid var(--blue-mid);
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .bd-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 3px 0;
+  }
+
+  .bd-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    border-top: 1px solid var(--blue-mid);
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 1.75rem; }
+
+  .tl-spine {
+    position: absolute;
+    left: 7px; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--blue), var(--border));
+  }
+
+  .tl-item { position: relative; margin-bottom: 1.25rem; }
+  .tl-item:last-child { margin-bottom: 0; }
+
+  .tl-dot {
+    position: absolute;
+    left: -1.75rem;
+    top: 4px;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 2.5px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--blue);
+  }
+
+  .tl-dot.dim {
+    background: var(--text-hint);
+    box-shadow: 0 0 0 1px var(--text-hint);
+  }
+
+  .tl-time { font-size: 10px; color: var(--text-hint); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 1px; }
+  .tl-title { font-size: 14px; font-weight: 500; color: var(--text); }
+  .tl-desc { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+  /* TABS */
+  .tab-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+  }
+
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .tab.active {
+    background: var(--blue);
+    color: #fff;
+  }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn 0.2s ease; }
+
+  /* BRACKET */
+  .bracket {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+  }
+
+  .bracket-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
+
+  .bracket-flow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .b-step {
+    flex-shrink: 0;
+    background: #F3F4F8;
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  .b-step.final {
+    background: var(--blue);
+    color: #fff;
+    border-color: var(--blue);
+    font-weight: 600;
+  }
+
+  .b-arrow { color: var(--text-hint); font-size: 14px; flex-shrink: 0; }
+
+  /* LOGISTICS */
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .logistics-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.8rem 1.25rem;
+    font-size: 13px;
+    color: var(--text-muted);
+    border-bottom: 0.5px solid var(--border);
+    transition: background 0.15s;
+  }
+
+  .logistics-item:last-child { border-bottom: none; }
+  .logistics-item:hover { background: var(--bg); }
+
+  .li-icon {
+    width: 32px; height: 32px;
+    background: var(--blue-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .li-text strong { display: block; color: var(--text); font-weight: 500; font-size: 13px; }
+  .li-text span { font-size: 12px; color: var(--text-hint); }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 2rem 1rem 0;
+    font-size: 12px;
+    color: var(--text-hint);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="court-lines">
+      <svg viewBox="0 0 680 200" preserveAspectRatio="xMidYMid slice">
+        <rect x="80" y="20" width="520" height="160" rx="4" stroke="#1A1A2E" stroke-width="3" fill="none"/>
+        <line x1="340" y1="20" x2="340" y2="180" stroke="#1A1A2E" stroke-width="2"/>
+        <rect x="180" y="20" width="320" height="160" rx="0" stroke="#1A1A2E" stroke-width="2" fill="none"/>
+        <line x1="80" y1="100" x2="600" y2="100" stroke="#1A1A2E" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="shuttle-wrap">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="27" r="5" fill="white" opacity="0.9"/>
+        <path d="M18 22 L10 6 L18 10 L26 6 Z" fill="white" opacity="0.85"/>
+        <line x1="18" y1="22" x2="18" y2="10" stroke="white" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <h1>Team Building<br><em>Badminton</em></h1>
+    <p class="hero-sub">Sabtu, TBA &nbsp;·&nbsp; 10.00 – 12.00 WITA &nbsp;·&nbsp; 2 Jam</p>
+    <div class="badge-row">
+      <span class="badge">62 Peserta</span>
+      <span class="badge">4–5 Courts</span>
+      <span class="badge">Ganda Pria & Wanita</span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="section">
+    <div class="section-label">Ringkasan</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-emoji">👥</div>
+        <div class="stat-val">62</div>
+        <div class="stat-label">Total peserta</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-emoji">🙋‍♂️</div>
+        <div class="stat-val">18</div>
+        <div class="stat-label">Staff pria</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-emoji">🙋‍♀️</div>
+        <div class="stat-val">44</div>
+        <div class="stat-label">Staff wanita</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-emoji">⏱</div>
+        <div class="stat-val">2<span style="font-size:1rem">j</span></div>
+        <div class="stat-label">Durasi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VENUE -->
+  <div class="section">
+    <div class="section-label">Pilih Venue</div>
+    <div class="venue-grid">
+      <div class="venue-card selected" id="v1" onclick="selectVenue('v1')">
+        <div class="venue-name">Imbo Sport Center</div>
+        <div class="venue-detail">4 courts &nbsp;·&nbsp; ±8 menit dari kantor</div>
+        <div class="venue-price">Rp 2.740.000</div>
+        <span class="venue-pill">Lebih hemat</span>
+      </div>
+      <div class="venue-card" id="v2" onclick="selectVenue('v2')">
+        <div class="venue-name">Jayaprana Badminton</div>
+        <div class="venue-detail">5 courts &nbsp;·&nbsp; ±5 menit dari kantor</div>
+        <div class="venue-price">Rp 3.560.000</div>
+        <span class="venue-pill blue">Lebih dekat</span>
+      </div>
+    </div>
+
+    <div class="breakdown" id="breakdown">
+      <div class="bd-row"><span id="b-court-label">Sewa lapangan (4 courts × 2 jam)</span><span id="b-court-val">Rp 400.000</span></div>
+      <div class="bd-row"><span id="b-shuttle-label">Shuttlecock (4 tubes)</span><span id="b-shuttle-val">Rp 480.000</span></div>
+      <div class="bd-row"><span>Konsumsi nasi kotak (62 pax)</span><span>Rp 1.860.000</span></div>
+      <div class="bd-total"><span>Total estimasi</span><span id="b-total">Rp 2.740.000</span></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section">
+    <div class="section-label">Jadwal Kegiatan</div>
+    <div class="timeline">
+      <div class="tl-spine"></div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-time">10.00</div>
+        <div class="tl-title">Kumpul & registrasi</div>
+        <div class="tl-desc">Check-in peserta, pembagian grup & bracket</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-time">10.15</div>
+        <div class="tl-title">Pemanasan bersama</div>
+        <div class="tl-desc">10–15 menit warm-up ringan</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-time">10.30</div>
+        <div class="tl-title">Kompetisi & fun play paralel</div>
+        <div class="tl-desc">Semua court aktif — 4–5 match berjalan bersamaan</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-time">11.30</div>
+        <div class="tl-title">Semifinal & Final</div>
+        <div class="tl-desc">1–2 court utama untuk final, sisa court untuk fun match & rotasi</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot dim"></div>
+        <div class="tl-time">12.00</div>
+        <div class="tl-title">Makan siang bersama</div>
+        <div class="tl-desc">Nasi kotak + air minum setelah semua match selesai</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPETITION FORMAT -->
+  <div class="section">
+    <div class="section-label">Format Kompetisi</div>
+    <div class="tab-bar">
+      <div class="tab active" id="tab-p" onclick="switchTab('p')">Ganda Pria</div>
+      <div class="tab" id="tab-w" onclick="switchTab('w')">Ganda Wanita</div>
+    </div>
+
+    <div class="panel active" id="panel-p">
+      <div style="overflow-x:auto;border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 10px 10px;">
+        <div style="display:flex;gap:0;min-width:540px;">
+
+          <!-- Info strip -->
+          <div style="min-width:110px;max-width:110px;margin-right:12px;display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--text-muted);">
+            <div style="font-weight:600;color:var(--text);font-size:12px;margin-bottom:4px;">Ganda Pria</div>
+            <div style="background:var(--bg);border-radius:6px;padding:6px 8px;line-height:1.6;">
+              <div>👥 Max 18 org</div>
+              <div>🏸 9 tim</div>
+              <div>📋 Race to 21</div>
+            </div>
+            <div style="background:#E8F5E9;border:1px solid #A5D6A7;border-radius:6px;padding:5px 8px;font-size:10px;color:#2E7D32;line-height:1.5;">
+              <div style="font-weight:600;margin-bottom:2px;">BYE = langsung</div>
+              <div>Lolos ke babak berikutnya tanpa bertanding</div>
+            </div>
+          </div>
+
+          <!-- Bracket columns -->
+          <div id="pria-bracket" style="flex:1;display:flex;gap:8px;align-items:stretch;"></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--text-hint);padding:0 2px;">
+          * Semua pertandingan 1 set, race to 21 points
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-w">
+      <div style="overflow-x:auto;border:0.5px solid var(--border);border-radius:var(--radius);padding:14px 10px 10px;">
+        <div style="display:flex;gap:0;min-width:620px;">
+
+          <!-- Info strip -->
+          <div style="min-width:110px;max-width:110px;margin-right:12px;display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--text-muted);">
+            <div style="font-weight:600;color:var(--text);font-size:12px;margin-bottom:4px;">Ganda Wanita</div>
+            <div style="background:var(--bg);border-radius:6px;padding:6px 8px;line-height:1.6;">
+              <div>👥 44 orang</div>
+              <div>🎯 22 tim</div>
+              <div>📋 Race to 21</div>
+            </div>
+            <div style="background:#FCE4EC;border:1px solid #F48FB1;border-radius:6px;padding:5px 8px;font-size:10px;color:#880E4F;line-height:1.5;">
+              <div style="font-weight:600;margin-bottom:2px;">6 tim BYE</div>
+              <div>Seeded langsung ke R16</div>
+            </div>
+          </div>
+
+          <div id="wanita-bracket" style="flex:1;display:flex;gap:8px;align-items:stretch;"></div>
+        </div>
+        <div style="margin-top:10px;font-size:11px;color:var(--text-hint);padding:0 2px;">
+          * Semua pertandingan 1 set, race to 21 points
+        </div>
+      </div>
+    </div>
+
+<style>
+.bk-col{display:flex;flex-direction:column;gap:0;min-width:100px;}
+.bk-head{font-size:10px;font-weight:600;text-align:center;padding:4px 6px;border-radius:6px 6px 0 0;margin-bottom:4px;letter-spacing:.03em;}
+.bk-head.pria{background:#1A2F4A;color:#F6C90E;}
+.bk-head.wanita{background:#3a1230;color:#ff6fa5;}
+.bk-slots{display:flex;flex-direction:column;flex:1;justify-content:space-around;gap:4px;}
+.bk-match{border-radius:5px;padding:5px 7px;font-size:11px;text-align:center;line-height:1.3;border:0.5px solid var(--border);}
+.bk-match.normal{background:var(--surface);color:var(--text-muted);}
+.bk-match.bye{background:#E8F5E9;border-color:#A5D6A7;color:#1B5E20;font-weight:600;}
+.bk-match.bye.wanita{background:#FCE4EC;border-color:#F48FB1;color:#880E4F;}
+.bk-match.final{background:#F6C90E;color:#0d1b3e;font-weight:700;font-size:12px;border-color:#F6C90E;}
+.bk-connector{display:flex;align-items:center;padding-top:20px;}
+.bk-connector svg{flex-shrink:0;}
+</style>
+
+<script>
+(function(){
+  function makeCol(head, headClass, items){
+    var col = document.createElement('div');
+    col.className = 'bk-col';
+    var h = document.createElement('div');
+    h.className = 'bk-head ' + headClass;
+    h.textContent = head;
+    col.appendChild(h);
+    var slots = document.createElement('div');
+    slots.className = 'bk-slots';
+    items.forEach(function(item){
+      var d = document.createElement('div');
+      d.className = 'bk-match ' + (item.type||'normal');
+      d.innerHTML = item.label;
+      slots.appendChild(d);
+    });
+    col.appendChild(slots);
+    return col;
+  }
+
+  function makeArrow(cls){
+    var d = document.createElement('div');
+    d.className = 'bk-connector';
+    d.innerHTML = '<svg width="14" height="14" viewBox="0 0 14 14"><path d="M2 7 L10 7 M7 4 L11 7 L7 10" fill="none" stroke="var(--text-hint)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    return d;
+  }
+
+  // GANDA PRIA
+  var pb = document.getElementById('pria-bracket');
+  var priaData = [
+    {head:'Babak Awal', items:[
+      {label:'1 Tim BYE', type:'bye'},
+      {label:'Tim 1 vs Tim 2'},
+      {label:'Tim 3 vs Tim 4'},
+      {label:'Tim 5 vs Tim 6'},
+      {label:'Tim 7 vs Tim 8'},
+    ]},
+    {head:'Quarterfinal', items:[
+      {label:'BYE', type:'bye'},
+      {label:'Pemenang 1'},
+      {label:'Pemenang 2'},
+      {label:'Pemenang 3'},
+      {label:'Pemenang 4'},
+    ]},
+    {head:'Semifinal', items:[
+      {label:'SF 1'},
+      {label:'SF 2'},
+    ]},
+    {head:'Final', items:[
+      {label:'🏆 JUARA', type:'final'},
+    ]},
+  ];
+  priaData.forEach(function(c,i){
+    if(i>0) pb.appendChild(makeArrow('pria'));
+    pb.appendChild(makeCol(c.head,'pria',c.items));
+  });
+
+  // GANDA WANITA
+  var wb = document.getElementById('wanita-bracket');
+  var wanitaData = [
+    {head:'Babak Awal', items:[
+      {label:'6 Tim BYE', type:'bye wanita'},
+      {label:'Tim 1 vs Tim 2'},
+      {label:'Tim 3 vs Tim 4'},
+      {label:'Tim 5 vs Tim 6'},
+      {label:'Tim 7 vs Tim 8'},
+      {label:'Tim 9 vs Tim 10'},
+      {label:'Tim 11 vs Tim 12'},
+      {label:'Tim 13 vs Tim 14'},
+      {label:'Tim 15 vs Tim 16'},
+    ]},
+    {head:'Round of 16', items:[
+      {label:'Pmg 1'},
+      {label:'Pmg 2'},
+      {label:'Pmg 3'},
+      {label:'Pmg 4'},
+      {label:'Pmg 5'},
+      {label:'Pmg 6'},
+      {label:'Pmg 7'},
+      {label:'Pmg 8'},
+    ]},
+    {head:'Quarterfinal', items:[
+      {label:'QF 1'},
+      {label:'QF 2'},
+      {label:'QF 3'},
+      {label:'QF 4'},
+    ]},
+    {head:'Semifinal', items:[
+      {label:'SF 1'},
+      {label:'SF 2'},
+    ]},
+    {head:'Final', items:[
+      {label:'🏆 JUARA', type:'final'},
+    ]},
+  ];
+  wanitaData.forEach(function(c,i){
+    if(i>0) wb.appendChild(makeArrow('wanita'));
+    wb.appendChild(makeCol(c.head,'wanita',c.items));
+  });
+})();
+</script>
+  </div>
+
+  <!-- NOTES -->
+  <div class="section">
+    <div class="section-label">Catatan Penting</div>
+    <div class="card">
+      <div class="logistics-item" style="align-items:flex-start;">
+        <div class="li-icon" style="background:#FEF3C7;margin-top:2px;">📋</div>
+        <div class="li-text">
+          <strong>Format kompetisi akan difinalisasi</strong>
+          <span>Format ini bersifat sementara. Versi final akan dibuat setelah jumlah peserta yang dapat bermain/berolahraga dipastikan.</span>
+        </div>
+      </div>
+      <div class="logistics-item" style="align-items:flex-start;">
+        <div class="li-icon" style="background:#F0FDF4;margin-top:2px;">📣</div>
+        <div class="li-text">
+          <strong>Tim Supporter untuk yang tidak bisa bermain</strong>
+          <span>Bagi peserta yang memiliki limitasi atau kendala kesehatan, tetap dapat berpartisipasi dengan membentuk <b>tim supporter</b> — membuat yel-yel, jingle, atau atraksi semangat untuk mendukung para pemain!</span>
+        </div>
+      </div>
+      <div class="logistics-item" style="align-items:flex-start;">
+        <div class="li-icon" style="background:#EFF6FF;margin-top:2px;">🏸</div>
+        <div class="li-text">
+          <strong>Staff sebagai Wasit</strong>
+          <span>Staff yang memahami aturan/regulasi bulutangkis dapat merangkap sebagai <b>wasit</b> saat tidak sedang bertanding.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGISTICS -->
+  <div class="section">
+    <div class="section-label">Konsumsi & Logistik</div>
+    <div class="card">
+      <div class="logistics-item">
+        <div class="li-icon">🍱</div>
+        <div class="li-text">
+          <strong>Nasi kotak</strong>
+          <span>Rp 30.000/pax — termasuk air gelas (62 pax)</span>
+        </div>
+      </div>
+      <div class="logistics-item">
+        <div class="li-icon">💧</div>
+        <div class="li-text">
+          <strong>BYO tumbler (wajib)</strong>
+          <span>Air minum tambahan harap bawa sendiri</span>
+        </div>
+      </div>
+      <div class="logistics-item">
+        <div class="li-icon">🔒</div>
+        <div class="li-text">
+          <strong>Loker tersedia</strong>
+          <span>Fasilitas penyimpanan barang di venue</span>
+        </div>
+      </div>
+      <div class="logistics-item">
+        <div class="li-icon">🚿</div>
+        <div class="li-text">
+          <strong>Toilet & shower bersih</strong>
+          <span>Tersedia di kedua venue</span>
+        </div>
+      </div>
+      <div class="logistics-item">
+        <div class="li-icon">🅿️</div>
+        <div class="li-text">
+          <strong>Parkir luas</strong>
+          <span>Kapasitas memadai untuk seluruh peserta</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Proposal Team Building · HR / Panitia · 2025</div>
+</div>
+
+<script>
+  function selectVenue(id) {
+    document.getElementById('v1').classList.remove('selected');
+    document.getElementById('v2').classList.remove('selected');
+    document.getElementById(id).classList.add('selected');
+
+    const bd = document.getElementById('breakdown');
+    bd.style.animation = 'none';
+    bd.offsetHeight;
+    bd.style.animation = 'fadeIn 0.25s ease';
+
+    if (id === 'v1') {
+      document.getElementById('b-court-label').textContent = 'Sewa lapangan (4 courts × 2 jam)';
+      document.getElementById('b-court-val').textContent = 'Rp 400.000';
+      document.getElementById('b-shuttle-label').textContent = 'Shuttlecock (4 tubes)';
+      document.getElementById('b-shuttle-val').textContent = 'Rp 480.000';
+      document.getElementById('b-total').textContent = 'Rp 2.740.000';
+    } else {
+      document.getElementById('b-court-label').textContent = 'Sewa lapangan (5 courts × 2 jam)';
+      document.getElementById('b-court-val').textContent = 'Rp 1.100.000';
+      document.getElementById('b-shuttle-label').textContent = 'Shuttlecock (5 tubes)';
+      document.getElementById('b-shuttle-val').textContent = 'Rp 600.000';
+      document.getElementById('b-total').textContent = 'Rp 3.560.000';
+    }
+  }
+
+  function switchTab(t) {
+    ['p', 'w'].forEach(x => {
+      document.getElementById('tab-' + x).classList.remove('active');
+      document.getElementById('panel-' + x).classList.remove('active');
+    });
+    document.getElementById('tab-' + t).classList.add('active');
+    document.getElementById('panel-' + t).classList.add('active');
+  }
+</script>
+</body>
+</html>
